@@ -1,6 +1,6 @@
 Identicon plugin for Elgg 1.8
-Latest Version: 1.8.0
-Released: 2013-01-02
+Latest Version: 1.8.1
+Released: 2013-11-14
 Contact: iionly@gmx.de
 License: GNU General Public License version 2
 Copyright: (c) iionly 2013, (C) Justin Richer, The MITRE Corporation 2010
@@ -16,6 +16,8 @@ For groups the use of the Identicon image is offered as an option on the group's
 
 Installation and configuration:
 
+(0. If you have a previous version of the plugin installed, disable it on your site and remove the identicon plugin folder from your mod directory completely before copying the new version on the server.)
+
 1. copy the Identicon plugin folder into the mod folder on your server and
 2. enable the plugin in the admin section of your site.
 
@@ -23,6 +25,11 @@ Installation and configuration:
 
 Changelog:
 
+1.8.1
+
+- Code cleanup,
+- Made the Removal button on the avatar edit page working both with regular user avatars and identicon images (not showing the button in the latter case).
+
 1.8.0 (by iionly):
 
-- initial release for Elgg 1.8.
+- Initial release for Elgg 1.8.

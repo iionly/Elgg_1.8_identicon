@@ -5,7 +5,7 @@
  *
  *
  * @author Justin Richer
- * @copyright The MITRE Corporation 2009
+ * @copyright The MITRE Corporation 2009-2013
  * @link http://mitre.org/
  *
  * updated for Elgg 1.8 by iionly
@@ -24,13 +24,48 @@ function identicon_init() {
     elgg_extend_view('core/avatar/upload', 'identicon/editusericon');
     elgg_extend_view('groups/edit', 'identicon/editgroupicon');
 
+    // Register a page handler so we can have nice URLs
+    elgg_register_page_handler('identicon', 'identicon_page_handler');
+
     elgg_register_action('identicon/userpreference', elgg_get_plugins_path() . 'identicon/actions/userpreference.php', 'logged_in');
     elgg_register_action('identicon/grouppreference', elgg_get_plugins_path() . 'identicon/actions/grouppreference.php', 'logged_in');
+    elgg_register_action('identicon/remove', elgg_get_plugins_path() . 'identicon/actions/remove.php', 'logged_in');
 
     elgg_register_plugin_hook_handler('entity:icon:url', 'user', 'identicon_usericon_hook', 900);
     elgg_register_plugin_hook_handler('entity:icon:url', 'group', 'identicon_groupicon_hook', 900);
 }
 
+/**
+ * Identicon page handler
+ *
+ * @param array $page Array of url segments
+ * @return bool
+ */
+function identicon_page_handler($page) {
+
+        if (!isset($page[0])) {
+                return false;
+        }
+
+        $base = elgg_get_plugins_path() . 'identicon/pages';
+
+        switch ($page[0]) {
+                case "identicon_user_icon": // user identicon
+                        set_input('user_guid', $page[1]);
+                        set_input('size', elgg_extract(2, $page, 'medium'));
+                        require "$base/identicon_user_icon.php";
+                        break;
+                case "identicon_group_icon": // group identicon
+                        set_input('group_guid', $page[1]);
+                        set_input('size', elgg_extract(2, $page, 'medium'));
+                        require "$base/identicon_group_icon.php";
+                        break;
+                default:
+                        return false;
+        }
+
+        return true;
+}
 
 /** generate sprite for corners and sides */
 function identicon_getsprite($shape,$R,$G,$B,$rotation, $spriteZ) {
@@ -340,9 +375,7 @@ function identicon_getcenter($shape,$fR,$fG,$fB,$bR,$bG,$bB,$usebg, $spriteZ) {
 }
 
 
-/**----------------------------------------------------------------------------
- Builds the avatar.
- -----------------------------------------------------------------------------*/
+/** Builds the avatar. */
 function identicon_build($seed, $file) {
 
     /** parse hash string */
@@ -401,8 +434,6 @@ function identicon_build($seed, $file) {
     /** generate center sprite */
     $center = identicon_getcenter($xsh, $cfr, $cfg, $cfb, $sfr, $sfg, $sfb, $xbg, $spriteZ);
     imagecopy($identicon, $center, $spriteZ, $spriteZ, 0, 0, $spriteZ, $spriteZ);
-
-    //$identicon = imagerotate($identicon, $angle, $bg);
 
     /** make white transparent */
     imagecolortransparent($identicon, $bg);
@@ -531,8 +562,6 @@ function identicon_build_group($seedbase, $file) {
         $center = identicon_getcenter($xsh, $cfr, $cfg, $cfb, $sfr, $sfg, $sfb, $xbg, $spriteZ);
         imagecopy($identicon, $center, $spriteZ, $spriteZ, 0, 0, $spriteZ, $spriteZ);
 
-        //$identicon = imagerotate($identicon, $angle, $bg);
-
         /** make white transparent */
         imagecolortransparent($identicon, $bg);
 
@@ -563,7 +592,6 @@ function identicon_build_group($seedbase, $file) {
 
     $icon_sizes = elgg_get_config('icon_sizes');
 
-    $topbar = get_resized_image_from_existing_file($filename, $icon_sizes['topbar']['w'], $icon_sizes['topbar']['h'], $icon_sizes['topbar']['square']);
     $tiny = get_resized_image_from_existing_file($filename, $icon_sizes['tiny']['w'], $icon_sizes['tiny']['h'], $icon_sizes['tiny']['square']);
     $small = get_resized_image_from_existing_file($filename, $icon_sizes['small']['w'], $icon_sizes['small']['h'], $icon_sizes['small']['square']);
     $medium = get_resized_image_from_existing_file($filename, $icon_sizes['medium']['w'], $icon_sizes['medium']['h'], $icon_sizes['medium']['square']);
@@ -584,10 +612,6 @@ function identicon_build_group($seedbase, $file) {
     $file->setFilename('identicon/' . $seedbase . '/tiny.jpg');
     $file->open('write');
     $file->write($tiny);
-    $file->close();
-    $file->setFilename('identicon/' . $seedbase . '/topbar.jpg');
-    $file->open('write');
-    $file->write($topbar);
     $file->close();
 
     return true;
@@ -616,10 +640,10 @@ function identicon_seed($entity) {
 }
 
 
-/**----------------------------------------------------------------------------
- This makes sure that the image is present (builds it if it isn't) and then
- displays it.
- -----------------------------------------------------------------------------*/
+/**
+ * This makes sure that the image is present (builds it if it isn't) and then
+ * displays it.
+ */
 function identicon_check($entity) {
 
     //make sure the image functions are available before trying to make avatars
@@ -715,11 +739,11 @@ function identicon_url($ent, $size) {
 
     if ($ent instanceof ElggUser) {
         if (identicon_check($ent)) {
-            return elgg_get_site_url() ."mod/identicon/identicon_user_icon.php?user_guid=" . $ent->getGUID() . '&size=' . $size;
+            return elgg_get_site_url() .'identicon/identicon_user_icon/' . $ent->getGUID() . '/' . $size;
         }
     } else if ($ent instanceof ElggGroup) {
         if (identicon_check($ent)) {
-            return elgg_get_site_url() . "mod/identicon/identicon_group_icon.php?group_guid=" . $ent->getGUID() . '&size=' . $size;
+            return elgg_get_site_url() . 'identicon/identicon_group_icon/' . $ent->getGUID() . '/' . $size;
         }
     }
 

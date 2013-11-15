@@ -12,7 +12,7 @@ if($group_guid) {
 
     if ($pref) {
         $group->preferGroupIdenticon = true;
-        $group->icontime = time();
+        unset($group->icontime);
         system_message(elgg_echo('identicon:group_identicon_yes'));
     } else {
         $group->preferGroupIdenticon = false;
@@ -21,4 +21,4 @@ if($group_guid) {
     }
 }
 
-forward($_SERVER['HTTP_REFERER']);
+forward(REFERER);

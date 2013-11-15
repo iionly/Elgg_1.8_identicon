@@ -1,6 +1,6 @@
 <?php
 
-$user = elgg_get_logged_in_user_entity();
+$user = $vars['entity'];
 
 if ($user) {
 
@@ -15,7 +15,7 @@ if ($user) {
 
     $submit = elgg_view('input/submit', array('value' => elgg_echo('save')));
 
-    $form = elgg_view('input/form', array('action' =>  $CONFIG->wwwroot . 'action/identicon/userpreference', 'body' => $img . "\n" . $check . "\n<br>" . $submit));
+    $form = elgg_view('input/form', array('action' =>  elgg_get_site_url() . "action/identicon/userpreference?user_guid={$user->guid}", 'body' => $img . "\n" . $check . "\n<br>" . $submit));
 
 ?>
 
@@ -29,4 +29,3 @@ if ($user) {
 
 <?php
 }
-?>

@@ -4,11 +4,9 @@
  *
  */
 
-require_once(dirname(dirname(dirname(__FILE__))) . "/engine/start.php");
-
 $group_guid = get_input('group_guid');
 
-/* @var ElggGroup $group */
+/** @var ElggGroup $group */
 $group = get_entity($group_guid);
 if (!($group instanceof ElggGroup)) {
     header("HTTP/1.1 404 Not Found");
@@ -23,7 +21,7 @@ if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']
 }
 
 $size = strtolower(get_input('size'));
-if (!in_array($size, array('large', 'medium', 'small', 'tiny', 'master', 'topbar'))) {
+if (!in_array($size, array('large', 'medium', 'small', 'tiny', 'master'))) {
     $size = "medium";
 }
 

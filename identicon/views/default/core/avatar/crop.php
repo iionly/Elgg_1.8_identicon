@@ -8,7 +8,7 @@
  *
  */
 
-$user = elgg_get_logged_in_user_entity();
+$user = $vars['entity'];
 
 if (!($user->preferIdenticon)) {
 

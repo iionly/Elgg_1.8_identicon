@@ -3,8 +3,6 @@
  * View Identicon user icon
  */
 
-require_once(dirname(dirname(dirname(__FILE__))) . "/engine/start.php");
-
 $user_guid = get_input('user_guid');
 if($user_guid) {
     $user = get_entity($user_guid);
@@ -43,7 +41,7 @@ try {
 }
 
 if (!$success) {
-    $url = "_graphics/icons/user/{$size}.png";
+    $url = "_graphics/icons/user/default{$size}.gif";
     $url = elgg_normalize_url($url);
     forward($url);
 }

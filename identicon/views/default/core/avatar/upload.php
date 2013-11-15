@@ -8,25 +8,25 @@
  *
  */
 
-$user = elgg_get_logged_in_user_entity();
+$user = $vars['entity'];
 
 if ($user->preferIdenticon) {
     echo "<p>" . elgg_echo("identicon:avatar_upload_disabled") . "</p>";
 } else {
 
     $user_avatar = elgg_view('output/img', array(
-        'src' => $vars['entity']->getIconUrl('medium'),
+        'src' => $user->getIconUrl('medium'),
         'alt' => elgg_echo('avatar')
        ));
 
     $current_label = elgg_echo('avatar:current');
 
     $remove_button = '';
-    if ($vars['entity']->icontime) {
+    if ($user->icontime) {
         $remove_button = elgg_view('output/url', array(
             'text' => elgg_echo('remove'),
             'title' => elgg_echo('avatar:remove'),
-            'href' => 'action/avatar/remove?guid=' . elgg_get_page_owner_guid(),
+            'href' => 'action/identicon/remove?guid=' . elgg_get_page_owner_guid(),
             'is_action' => true,
             'class' => 'elgg-button elgg-button-cancel mll'
            ));
